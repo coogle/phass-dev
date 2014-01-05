@@ -19,12 +19,17 @@ class Client implements ServiceProviderInterface, FactoryInterface
                 'timeline::insert' => 'GoogleGlass\Api\Timeline\Insert',
                 'timeline::get' => 'GoogleGlass\Api\Timeline\Get',
                 'timeline::list' => 'GoogleGlass\Api\Timeline\ListApi',
+                
                 'timeline::attachment::get' => 'GoogleGlass\Api\Timeline\Attachment\Get',
                 'timeline::attachment::list' => 'GoogleGlass\Api\Timeline\Attachment\ListApi',
+                
                 'subscriptions::list' => 'GoogleGlass\Api\Subscriptions\ListApi',
                 'subscriptions::delete' => 'GoogleGlass\Api\Subscriptions\Delete',
                 'subscriptions::insert' => 'GoogleGlass\Api\Subscriptions\Insert',
-                'contacts::list' => 'GoogleGlass\Api\Contacts\ListApi'
+                
+                'contacts::list' => 'GoogleGlass\Api\Contacts\ListApi',
+                'contacts::delete' => 'GoogleGlass\Api\Contacts\Delete',
+                'contacts::insert' => 'GoogleGlass\Api\Contacts\Insert'
             )
         );
     }

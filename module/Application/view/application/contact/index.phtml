@@ -49,14 +49,29 @@ $(function() {
     <h3>No Conctacts found, why not add one?</h3>
     <?php endif; ?>
 </div>
-<div id="newContact" title="Create a new Contact§">
+
+
+<div id="newContact" title="Create a new Contact">
 <p>Please select which timeline item events you would like to subscribe to:</p>
-<form id='subscribeForm' action="/subscriptions/subscribe" method="GET">
-<input type="hidden" name="id" value="timeline"/>
-    <input type="checkbox" name="op[]" value="REPLY" checked/>Replies<br/>
-    <input type="checkbox" name="op[]" value="CUSTOM" checked/>Custom<br/>
-    <input type="checkbox" name="op[]" value="DELETE" checked/>Delete<br/>
-    <input type="checkbox" name="op[]" value="SHARE" checked/>Share<br/>
-    <input type="checkbox" name="op[]" value="LAUNCH" checked/>Launch<br/>
+<form id='subscribeForm' action="/contacts/insert" method="POST">
+    <fieldset>
+        <label for="displayName">Displayed Name</label>
+        <input type="text" name="displayName" id="name" class="text ui-widget-content ui-corner-all"/>
+        <label for="acceptCommands-takenote">Take A Note</label>
+        <input type="checkbox" name="acceptCommands[]" id="acceptCommands-takenote" value="TAKE_A_NOTE"/>
+        <label for="acceptCommands-postupdate">Post An Update</label>
+        <input type="checkbox" name="acceptCommands[]" id="acceptCommands-postupdate" value="POST_AN_UPDATE"/>
+        <label for="phoneNumber">Phone Number</label>
+        <input type="text" name="phoneNumber" id="phoneNumber" class="text ui-widget-content ui-corner-all"/>
+        <label for="priority">Priority</label>
+        <input type="text" name="priority" id="priority" size="4" class="text ui-widget-content ui-corner-all"/>
+        <label for="speakableName">Speakable Name</label>
+        <input type="text" name="speakableName" id="speakableName" class="text ui-widget-content ui-corner-all"/>
+        <label for="type">Contact Type</label>
+        <select name="type" id="type">
+            <option value="INDIVIDUAL">Individual</option>
+            <option value="GROUP">Group</option>
+        </select>
+    </fieldset>
 </form>
 </div>

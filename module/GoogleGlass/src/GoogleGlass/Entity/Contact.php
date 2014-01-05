@@ -70,11 +70,25 @@ class Contact extends GlassModelAbstract
         $this->_acceptTypes = new \ArrayObject();
         $this->_acceptCommands = new \ArrayObject();
         $this->_sharingFeatures = new \ArrayObject();
+        
     }
     
     public function toArray()
     {
-        return array();
+        return array(
+            'kind' => $this->getKind(),
+            'source' => $this->getSource(),
+            'id' => $this->getId(),
+            'displayName' => $this->getDisplayName(),
+            'type' => $this->getType(),
+            'phoneNumber' => $this->getPhoneNumber(),
+            'priority' => $this->getPriority(),
+            'speakableName' => $this->getSpeakableName(),
+            'imageUrls' => $this->getImageUrls()->getArrayCopy(),
+            'acceptTypes' => $this->getAcceptTypes()->getArrayCopy(),
+            'acceptCommands' => $this->getAcceptCommands()->getArrayCopy(),
+            'sharingFeatures' => $this->getSharingFeatures()->getArrayCopy()
+        );
     }
     
     public function fromJsonResult(array $result)
@@ -117,8 +131,8 @@ class Contact extends GlassModelAbstract
 	 * @param ArrayObject $_sharingFeatures
 	 * @return self
 	 */
-	public function setSharingFeatures($_sharingFeatures) {
-		$this->_sharingFeatures = $_sharingFeatures;
+	public function setSharingFeatures(array $_sharingFeatures) {
+		$this->_sharingFeatures = new \ArrayObject($_sharingFeatures);
 		return $this;
 	}
 
@@ -239,8 +253,8 @@ class Contact extends GlassModelAbstract
 	 * @param ArrayObject $_imageUrls
 	 * @return self
 	 */
-	public function setImageUrls($_imageUrls) {
-		$this->_imageUrls = $_imageUrls;
+	public function setImageUrls(array $_imageUrls) {
+		$this->_imageUrls = new \ArrayObject($_imageUrls);
 		return $this;
 	}
 
@@ -257,8 +271,8 @@ class Contact extends GlassModelAbstract
 	 * @param ArrayObject $_acceptTypes
 	 * @return self
 	 */
-	public function setAcceptTypes($_acceptTypes) {
-		$this->_acceptTypes = $_acceptTypes;
+	public function setAcceptTypes(array $_acceptTypes) {
+		$this->_acceptTypes = new \ArrayObject($_acceptTypes);
 		return $this;
 	}
 
@@ -284,8 +298,8 @@ class Contact extends GlassModelAbstract
 	 * @param ArrayObject $_acceptCommands
 	 * @return self
 	 */
-	public function setAcceptCommands($_acceptCommands) {
-		$this->_acceptCommands = $_acceptCommands;
+	public function setAcceptCommands(array $_acceptCommands) {
+		$this->_acceptCommands = new \ArrayObject($_acceptCommands);
 		return $this;
 	}
 
