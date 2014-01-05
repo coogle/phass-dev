@@ -3,9 +3,8 @@
 namespace GoogleGlass\Entity\Timeline;
 
 use GoogleGlass\Entity\ArrayObject;
-use Zend\Uri\Uri;
 use GoogleGlass\Entity\GlassModelAbstract;
-use GoogleGlass\Entity\NotificationConfig;
+use GoogleGlass\Entity\Timeline\NotificationConfig;
 use GoogleGlass\Entity\Location;
 
 class Item extends GlassModelAbstract 
@@ -142,8 +141,10 @@ class Item extends GlassModelAbstract
     
     public function __construct()
     {
-        $this->_attchments = new \ArrayObject();
+        $this->_attachments = new \ArrayObject();
         $this->_recipients = new \ArrayObject();
+        $this->_menuItems  = new \ArrayObject();
+        
     }
     
     /**
@@ -219,21 +220,21 @@ class Item extends GlassModelAbstract
 	/**
 	 * @return the $_isBundleCover
 	 */
-	public function getIsBundleCover() {
+	public function isBundleCover() {
 		return $this->_isBundleCover;
 	}
 
 	/**
 	 * @return the $_isDeleted
 	 */
-	public function getIsDeleted() {
+	public function isDeleted() {
 		return $this->_isDeleted;
 	}
 
 	/**
 	 * @return the $_isPinned
 	 */
-	public function getIsPinned() {
+	public function isPinned() {
 		return $this->_isPinned;
 	}
 
@@ -422,8 +423,8 @@ class Item extends GlassModelAbstract
 	 * @param boolean $_isBundleCover
 	 * @return self
 	 */
-	public function setIsBundleCover($_isBundleCover) {
-		$this->_isBundleCover = $_isBundleCover;
+	public function setBundleCover($_isBundleCover) {
+		$this->_isBundleCover = (bool)$_isBundleCover;
 		return $this;
 	}
 
@@ -431,8 +432,8 @@ class Item extends GlassModelAbstract
 	 * @param boolean $_isDeleted
 	 * @return self
 	 */
-	public function setIsDeleted($_isDeleted) {
-		$this->_isDeleted = $_isDeleted;
+	public function setDeleted($_isDeleted) {
+		$this->_isDeleted = (bool) $_isDeleted;
 		return $this;
 	}
 
@@ -440,8 +441,8 @@ class Item extends GlassModelAbstract
 	 * @param \GoogleGlass\Entity\Timeline\booleam $_isPinned
 	 * @return self
 	 */
-	public function setIsPinned($_isPinned) {
-		$this->_isPinned = $_isPinned;
+	public function setPinned($_isPinned) {
+		$this->_isPinned = (bool)$_isPinned;
 		return $this;
 	}
 
@@ -573,8 +574,31 @@ class Item extends GlassModelAbstract
 	       'kind' => $this->getKind(),
 	        'id' => $this->getId(),
 	        'selfLink' => $this->getSelfLink(),
-	        'etag' => $this->getETag()
+	        'etag' => $this->getETag(),
+	        'sourceItemId' => $this->getSourceItemId(),
+	        'canonicalUrl' => $this->getCanonicalUrl(),
+	        'bundleId' => $this->getBundleId(),
+	        'isBundleCover' => $this->isBundleCover(),
+	        'selfLink' => $this->getSelfLink(),
+	        'isPinned' => $this->isPinned(),
+	        'pinScore' => $this->getPinScore(),
+	        'isDeleted' => $this->isDeleted(),
+	        'inReplyTo' => $this->getInReplyTo(),
+	        'title' => $this->getTitle(),
+	        'text' => $this->getText(),
+	        'html' => $this->getHtml(),
+	        'speakableType' => $this->getSpeakableType(),
+	        'speakableText' => $this->getSpeakableText(),
 	    );
+	    
+	    $notification = $this->getNotification();
+	    
+	    if($notification instanceof NotificationConfig)
+	    {
+	        $retval['notification'] = $notification->toArray();
+	    } else {
+	        $retval['notification'] = null;
+	    }
 	    
 	    $created = $this->getCreated();
 	    
@@ -640,14 +664,52 @@ class Item extends GlassModelAbstract
 	
 	public function fromJsonResult(array $result)
 	{
-	    $this->setKind($result['kind'])
-	         ->setId($result['id'])
-	         ->setSelfLink($result['selfLink'])
-	         ->setCreated($this->convertToDateTime($result['created']))
-	         ->setUpdated($this->convertToDateTime($result['updated']))
+	    $this->setKind(isset($result['kind']) ? $result['kind'] : null)
+	         ->setId(isset($result['id']) ? $result['id'] : null)
+	         ->setSelfLink(isset($result['selfLink']) ? $result['selfLink'] : null)
+	         ->setCreated(isset($result['created']) ? $this->convertToDateTime($result['created']) : null)
+	         ->setUpdated(isset($result['updated']) ? $this->convertToDateTime($result['updated']) : null)
 	         ->setDisplayTime($this->convertToDateTime(isset($result['displayTime']) ? $result['displayTime'] : null))
-	         ->setETag($result['etag']);
+	         ->setETag(isset($result['etag']) ? $result['etag'] : null)
+	         ->setSourceItemId(isset($result['sourceItemId']) ? $result['sourceItemId'] : null)
+	         ->setCanonicalUrl(isset($result['canonicalUrl']) ? $result['canonicalUrl'] : null)
+	         ->setBundleId(isset($result['bundleId']) ? $result['bundleId'] : null)
+	         ->setBundleCover(isset($result['isBundleCover']) ? (bool)$result['isBundleCover'] : null)
+	         ->setPinned(isset($result['isPinned']) ? (bool)$result['isPinned'] : null)
+	         ->setPinScore(isset($result['pinScore']) ? $result['pinScore'] : null)
+	         ->setDeleted(isset($result['isDeleted']) ? (bool)$result['isDeleted'] : null)
+	         ->setInReplyTo(isset($result['inReplyTo']) ? $result['inReplyTo'] : null)
+	         ->setTitle(isset($result['title']) ? $result['title'] : null)
+	         ->setText(isset($result['text']) ? $result['text'] : null)
+	         ->setHtml(isset($result['html']) ? $result['html'] : null)
+	         ->setSpeakableType(isset($result['speakableType']) ? $result['speakableType'] : null)
+	         ->setSpeakableText(isset($result['speakableText']) ? $result['speakableText'] : null);
+	         
+	    if(isset($result['creator'])) {
+	        $creatorObj = $this->getServiceLocator()->get('GoogleGlass\Contact');
+	        $creatorObj->fromJsonResult($result['creator']);
+	        $this->setCreator($creatorObj);
+	    }
 	    
+	    if(isset($result['menuItems']) && is_array($result['menuItems'])) {
+	        $menuItems = array();
+	        
+	        foreach($result['menuItems'] as $menuItem) {
+	            $menuItemObj = $this->getServiceLocator()->get('GoogleGlass\Timeline\MenuItem');
+	            $menuItemObj->fromJsonResult($menuItem);
+	            
+	            $menuItems[] = clone $menuItemObj;
+	        }
+	        
+	        $this->setMenuItems($menuItems);
+	    }
+	    
+	    if(isset($result['notification'])) {
+	        $notificationObj = $this->getServiceLocator()->get('GoogleGlass\Timeline\NotificationConfig');
+	        $notificationObj->fromJsonResult($result['notification']);
+	        
+	        $this->setNotification($notificationObj);
+	    }
 	    if(isset($result['location'])) {
     	    $locationObj = $this->getServiceLocator()->get('GoogleGlass\Location');
     	    $locationObj->fromJsonResult($result['location']);
@@ -686,39 +748,17 @@ class Item extends GlassModelAbstract
 	    return $this;
 	}
 	
+	public function setDefaultNotification()
+	{
+	    $n = $this->getServiceLocator()->get('GoogleGlass\Timeline\NotificationConfig');
+	    $n->setLevel(NotificationConfig::LEVEL_DEFAULT);
+	    $this->setNotification($n);
+	    return $this;
+	}
+	
 	public function insert()
     {
-        $params = array();
-        
-        if(!is_null($this->getAttachment())) {
-            $params['data'] = $this->getAttachment()->getContent();
-            $params['mimeType'] = $this->getAttachment()->getMimeType();
-            
-            /**
-             * @todo We should look at this and maybe change our approach depending on the
-             *       type of media we are uploading. Images should be uploaded multipart, but
-             *       audio/video files may want to do some sort of fancy multi-stage upload
-             *       for performance reasons. Although honestly, it probably doesn't matter
-             *       because it should be done offline anyway.
-             */
-            $params['uploadType'] = 'multipart';
-        }
-        
-        $notificationConfig = @$this->getNotification();
-        
-        if(is_null($notificationConfig)) {
-            $notificationConfig = new \Google_Service_Mirror_NotificationConfig();
-            $notificationConfig->setLevel("DEFAULT");
-            $this->setNotification($notificationConfig);
-        }
-        
         $glassService = $this->getServiceLocator()->get('GoogleGlass\Service\GlassService');
-        
-        $retval = $glassService->getMirrorService()->timeline->insert($this, $params);
-        
-        $this->populateFromGoogleResult($retval);
-        
-        return $this;
+        return $glassService->execute('timeline::insert', $this);
     }
-    
 }

@@ -90,6 +90,7 @@ class Module
                 'GoogleGlass\Timeline\Item' => 'GoogleGlass\Entity\Timeline\Item',
                 'GoogleGlass\Timeline\Attachment' => 'GoogleGlass\Entity\Timeline\Attachment',
                 'GoogleGlass\Timeline\MenuItem' => 'GoogleGlass\Entity\Timeline\MenuItem',
+                'GoogleGlass\Timeline\NotificationConfig' => 'GoogleGlass\Entity\Timeline\NotificationConfig',
                 'GoogleGlass\Contact' => 'GoogleGlass\Entity\Contact',
                 'GoogleGlass\Location' => 'GoogleGlass\Entity\Location',
                 'GoogleGlass\Timeline' => 'GoogleGlass\Entity\Timeline',

@@ -6,7 +6,7 @@ $(function() {
         width: 350,
         modal: true,
         buttons : {
-            "Subscribe" : function()
+            "Create Contact" : function()
             {
                 $('#subscribeForm').submit();
             },
@@ -52,7 +52,7 @@ $(function() {
 
 
 <div id="newContact" title="Create a new Contact">
-<p>Please select which timeline item events you would like to subscribe to:</p>
+<p>Use the form below to create a new Contact:</p>
 <form id='subscribeForm' action="/contacts/insert" method="POST">
     <fieldset>
         <label for="displayName">Displayed Name</label>
