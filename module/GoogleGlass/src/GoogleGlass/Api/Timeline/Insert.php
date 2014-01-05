@@ -20,13 +20,7 @@ class Insert extends ApiAbstract
             return $this->executeWithAttachments($data);
         }
         
-        $client = $this->getHttpClient()
-                       ->setUri("https://www.googleapis.com/mirror/v1/timeline")
-                       ->setMethod(Request::METHOD_POST);
-        
-        $client->getRequest()
-               ->getHeaders()
-               ->addHeaderLine("Content-Type", 'application/json');
+        $client = $this->getHttpClient('/mirror/v1/timeline', Request::METHOD_POST);
         
         $rawPost = $data->toJson(false);
         

@@ -16,10 +16,7 @@ class Delete extends ApiAbstract
             $contactId = (string)$data;
         }
         
-        $client = $this->getHttpClient()
-                       ->setUri("https://www.googleapis.com/mirror/v1/contacts/$contactId")
-                       ->setMethod(Request::METHOD_DELETE);
-        
-        return $this->executeRequest($client);
+        $client = $this->getHttpClient("/mirror/v1/contacts/$contactId", Request::METHOD_DELETE);
+        $this->executeRequest($client);
     }
 }

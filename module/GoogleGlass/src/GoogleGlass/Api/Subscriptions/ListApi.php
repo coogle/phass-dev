@@ -10,10 +10,7 @@ class ListApi extends ApiAbstract
 {
     public function execute($data = null)
     {
-        $client = $this->getHttpClient();
-        
-        $client->setUri("https://www.googleapis.com/mirror/v1/subscriptions")
-               ->setMethod(Request::METHOD_GET);
+        $client = $this->getHttpClient('/mirror/v1/subscriptions', Request::METHOD_GET);
         
         $response = $this->executeRequest($client);
         

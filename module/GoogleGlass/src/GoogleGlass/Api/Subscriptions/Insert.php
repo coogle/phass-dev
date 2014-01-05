@@ -15,15 +15,9 @@ class Insert extends ApiAbstract
             throw new \InvalidArgumentException("Must provide a subscription entity");
         }
         
-        $client = $this->getHttpClient()
-                       ->setUri('https://www.googleapis.com/mirror/v1/subscriptions')
-                       ->setMethod(Request::METHOD_POST);
+        $client = $this->getHttpClient('/mirror/v1/subscriptions', Request::METHOD_POST);
         
         $client->setRawBody($data->toJson());
-        
-        $client->getRequest()
-               ->getHeaders()
-               ->addHeaderLine('Content-Type', 'application/json');
         
         $response = $this->executeRequest($client);
         

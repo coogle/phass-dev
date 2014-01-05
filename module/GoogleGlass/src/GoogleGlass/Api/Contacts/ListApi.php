@@ -9,9 +9,7 @@ class ListApi extends ApiAbstract
 {
     public function execute($data = null)
     {
-        $client = $this->getHttpClient()
-                       ->setUri('https://www.googleapis.com/mirror/v1/contacts')
-                       ->setMethod(Request::METHOD_GET);
+        $client = $this->getHttpClient('/mirror/v1/contacts', Request::METHOD_GET);
         
         $response = $this->executeRequest($client);
         

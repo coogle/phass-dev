@@ -14,14 +14,8 @@ class Insert extends ApiAbstract
             throw new \InvalidArgumentException("Must provide a Contact object");
         }
         
-        $client = $this->getHttpClient()
-                       ->setUri("https://www.googleapis.com/mirror/v1/contacts")
-                       ->setMethod(Request::METHOD_POST);
-        
-        $client->getRequest()
-               ->getHeaders()
-               ->addHeaderLine('Content-Type', 'application/json');
-        
+        $client = $this->getHttpClient('/mirror/v1/contacts', Request::METHOD_POST);
+
         $rawPost = $data->toJson(false);
         
         $client->setRawBody($rawPost);

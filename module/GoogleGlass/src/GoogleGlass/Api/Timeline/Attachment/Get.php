@@ -15,9 +15,7 @@ class Get extends ApiAbstract
             throw new \InvalidArgumentException("You must provide an itemId and an attachmentId");
         }
         
-        $client = $this->getHttpClient()
-                       ->setUri("https://www.googleapis.com/mirror/v1/timeline/{$data['itemId']}/attachments/{$data['attachmentId']}")
-                       ->setMethod(Request::METHOD_GET);
+        $client = $this->getHttpClient("/mirror/v1/timeline/{$data['itemId']}/attachments/{$data['attachmentId']}", Request::METHOD_GET);
         
         $this->logEvent("Retrieving Attachment from URL: {$client->getUri()}", Logger::DEBUG);
         

@@ -9,6 +9,7 @@ use GoogleGlass\Api\Exception\InvalidTokenException;
 use Zend\Json\Json;
 use GoogleGlass\Api\Exception\ApiCallException;
 use Zend\EventManager\EventManagerAwareInterface;
+use Zend\Http\Request;
 
 abstract class ApiAbstract implements ServiceLocatorAwareInterface, FactoryInterface, EventManagerAwareInterface
 {
@@ -68,8 +69,25 @@ abstract class ApiAbstract implements ServiceLocatorAwareInterface, FactoryInter
     /**
 	 * @return the $_httpClient
 	 */
-	public function getHttpClient() {
-		return $this->_httpClient;
+	public function getHttpClient($path = null, $method = null) {
+	    
+	    $retval = $this->_httpClient;
+	    
+	    if(!is_null($path)) {
+	        $retval->setUri('https://www.googleapis.com' . $path);
+	    }
+	    
+	    if(!is_null($method)) {
+	        $retval->setMethod($method);
+	        
+	        if($method == Request::METHOD_POST) {
+	            $retval->getRequest()
+	                   ->getHeaders()
+	                   ->addHeaderLine('Content-Type', 'application/json');
+	        }
+	    }
+	    
+	    return $retval;
 	}
 
 	/**
