@@ -1,0 +1,62 @@
+<script>
+$(function() {
+    $('#newContact').dialog({
+        autoOpen: false,
+        height: 300,
+        width: 350,
+        modal: true,
+        buttons : {
+            "Subscribe" : function()
+            {
+                $('#subscribeForm').submit();
+            },
+            Cancel : function() {
+                $(this).dialog('close');
+            }
+        }
+    });
+
+    $('#new-contact').button().click(function() {
+        $('#newContact').dialog('open');
+    });
+
+});
+</script>
+
+<div class="text-section">
+    <h2>Your Google Glass App Contacts</h2>
+</div>
+<div class="body-section">
+    <h1>Subscriptions </h1> 
+    <button id="new-contact">Add new Contact</button>
+    <hr/>
+    <?php if($this->contacts->count() > 0):?>
+        <?php foreach($this->contacts as $contact): ?>
+        <table>
+            <tbody>
+                <tr>
+                    <th>Display Name: </th>
+                    <td><?php echo $contact->getDisplayName()?> (<a href="/contacts/delete?id=<?php echo $this->escapeurl($contact->getId())?>">remove</a>)</td>
+                </tr>
+                <tr>
+                    <th>ID: </th>
+                    <td><?php echo $contact->getId()?></td>
+                </tr>
+            </tbody>
+        </table>
+        <?php endforeach; ?>
+    <?php else: ?>
+    <h3>No Conctacts found, why not add one?</h3>
+    <?php endif; ?>
+</div>
+<div id="newContact" title="Create a new Contact§">
+<p>Please select which timeline item events you would like to subscribe to:</p>
+<form id='subscribeForm' action="/subscriptions/subscribe" method="GET">
+<input type="hidden" name="id" value="timeline"/>
+    <input type="checkbox" name="op[]" value="REPLY" checked/>Replies<br/>
+    <input type="checkbox" name="op[]" value="CUSTOM" checked/>Custom<br/>
+    <input type="checkbox" name="op[]" value="DELETE" checked/>Delete<br/>
+    <input type="checkbox" name="op[]" value="SHARE" checked/>Share<br/>
+    <input type="checkbox" name="op[]" value="LAUNCH" checked/>Launch<br/>
+</form>
+</div>

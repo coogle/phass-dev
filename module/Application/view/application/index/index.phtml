@@ -1,0 +1,29 @@
+<div class="text-section">
+    <h2>Your Google Glass App Timeline</h2>
+</div>
+<div class="body-section">
+    <?php foreach($this->timelineItems->items() as $item): ?>
+    <div class="span4">
+        <table style="border: thin solid black;">
+        <?php if($item->hasAttachments()): ?>
+            <tbody style="background: <?php echo $this->getItemImageUrl($item); ?>">
+        <?php else: ?>
+            <tbody>
+        <?php endif; ?>
+                <tr>
+                    <th>ID</th>
+                    <td><a href="/timeline/view/<?php echo $item->getId()?>"><?php echo substr($item->getId(), 0, 25) . "..."?></a></td>
+                </tr>
+                <tr>
+                    <th>Text</th>
+                    <td><?php echo $this->escapehtml($item->getText())?></td>
+                </tr>
+                <tr>
+                    <th>HTML</th>
+                    <td><?php echo $this->escapehtml($item->getText())?></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <?php endforeach;?>
+</div>

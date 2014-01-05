@@ -1,0 +1,724 @@
+<?php
+
+namespace GoogleGlass\Entity\Timeline;
+
+use GoogleGlass\Entity\ArrayObject;
+use Zend\Uri\Uri;
+use GoogleGlass\Entity\GlassModelAbstract;
+use GoogleGlass\Entity\NotificationConfig;
+use GoogleGlass\Entity\Location;
+
+class Item extends GlassModelAbstract 
+{
+    /**
+     * @var \ArrayObject
+     */
+    protected $_attachments;
+    
+    /**
+     * @var string
+     */
+    protected $_bundleId;
+    
+    /**
+     * @var \Zend\Uri\Uri
+     */
+    protected $_canonicalUrl;
+    
+    /**
+     * @var \DateTime
+     */
+    protected $_created;
+    
+    /**
+     * @var GoogleGlass\Contact
+     */
+    protected $_creator;
+    
+    /**
+     * @var \DateTime
+     */
+    protected $_displayTime;
+    
+    /**
+     * @var string
+     */
+    protected $_eTag;
+    
+    /**
+     * @var string
+     */
+    protected $_html;
+    
+    /**
+     * @var string
+     */
+    protected $_id;
+    
+    /**
+     * @var string
+     */
+    protected $_inReplyTo;
+    
+    /**
+     * @var boolean
+     */
+    protected $_isBundleCover;
+    
+    /**
+     * @var boolean
+     */
+    protected $_isDeleted;
+    
+    /**
+     * @var booleam
+     */
+    protected $_isPinned;
+    
+    /**
+     * @var string
+     */
+    protected $_kind = "mirror#timelineItem";
+    
+    /**
+     * @var GoogleGlass\Entity\Location
+     */
+    protected $_location;
+    
+    /**
+     * @var \ArrayObject
+     */
+    protected $_menuItems;
+    
+    /**
+     * @var GoogleGlass\Entity\NotificationConfig
+     */
+    protected $_notification;
+    
+    /**
+     * @var int
+     */
+    protected $_pinScore;
+    
+    /**
+     * @var \ArrayObject
+     */
+    protected $_recipients;
+    
+    /**
+     * @var string
+     */
+    protected $_selfLink;
+    
+    /**
+     * @var string
+     */
+    protected $_sourceItemId;
+    
+    /**
+     * @var string
+     */
+    protected $_speakableText;
+    
+    /**
+     * @var string
+     */
+    protected $_speakableType;
+    
+    /**
+     * @var string
+     */
+    protected $_text;
+    
+    /**
+     * @var string
+     */
+    protected $_title;
+    
+    /**
+     * @var \DateTime
+     */
+    protected $_updated;
+    
+    public function __construct()
+    {
+        $this->_attchments = new \ArrayObject();
+        $this->_recipients = new \ArrayObject();
+    }
+    
+    /**
+	 * @return the $_attachments
+	 */
+	public function getAttachments() {
+		return $this->_attachments;
+	}
+
+	/**
+	 * @return the $_bundleId
+	 */
+	public function getBundleId() {
+		return $this->_bundleId;
+	}
+
+	/**
+	 * @return the $_canonicalUrl
+	 */
+	public function getCanonicalUrl() {
+		return $this->_canonicalUrl;
+	}
+
+	/**
+	 * @return the $_created
+	 */
+	public function getCreated() {
+		return $this->_created;
+	}
+
+	/**
+	 * @return the $_creator
+	 */
+	public function getCreator() {
+		return $this->_creator;
+	}
+
+	/**
+	 * @return the $_displayTime
+	 */
+	public function getDisplayTime() {
+		return $this->_displayTime;
+	}
+
+	/**
+	 * @return the $_eTag
+	 */
+	public function getETag() {
+		return $this->_eTag;
+	}
+
+	/**
+	 * @return the $_html
+	 */
+	public function getHtml() {
+		return $this->_html;
+	}
+
+	/**
+	 * @return the $_id
+	 */
+	public function getId() {
+		return $this->_id;
+	}
+
+	/**
+	 * @return the $_inReplyTo
+	 */
+	public function getInReplyTo() {
+		return $this->_inReplyTo;
+	}
+
+	/**
+	 * @return the $_isBundleCover
+	 */
+	public function getIsBundleCover() {
+		return $this->_isBundleCover;
+	}
+
+	/**
+	 * @return the $_isDeleted
+	 */
+	public function getIsDeleted() {
+		return $this->_isDeleted;
+	}
+
+	/**
+	 * @return the $_isPinned
+	 */
+	public function getIsPinned() {
+		return $this->_isPinned;
+	}
+
+	/**
+	 * @return the $_kind
+	 */
+	public function getKind() {
+		return $this->_kind;
+	}
+
+	/**
+	 * @return the $_location
+	 */
+	public function getLocation() {
+		return $this->_location;
+	}
+
+	/**
+	 * @return the $_menuItems
+	 */
+	public function getMenuItems() {
+		return $this->_menuItems;
+	}
+
+	/**
+	 * @return the $_notification
+	 */
+	public function getNotification() {
+		return $this->_notification;
+	}
+
+	/**
+	 * @return the $_pinScore
+	 */
+	public function getPinScore() {
+		return $this->_pinScore;
+	}
+
+	/**
+	 * @return the $_recipients
+	 */
+	public function getRecipients() {
+		return $this->_recipients;
+	}
+
+	/**
+	 * @return the $_selfLink
+	 */
+	public function getSelfLink() {
+		return $this->_selfLink;
+	}
+
+	/**
+	 * @return the $_sourceItemId
+	 */
+	public function getSourceItemId() {
+		return $this->_sourceItemId;
+	}
+
+	/**
+	 * @return the $_speakableText
+	 */
+	public function getSpeakableText() {
+		return $this->_speakableText;
+	}
+
+	/**
+	 * @return the $_speakableType
+	 */
+	public function getSpeakableType() {
+		return $this->_speakableType;
+	}
+
+	/**
+	 * @return the $_text
+	 */
+	public function getText() {
+		return $this->_text;
+	}
+
+	/**
+	 * @return the $_title
+	 */
+	public function getTitle() {
+		return $this->_title;
+	}
+
+	/**
+	 * @return the $_updated
+	 */
+	public function getUpdated() {
+		return $this->_updated;
+	}
+
+	/**
+	 * @param ArrayObject $_attachments
+	 * @return self
+	 */
+	public function setAttachments($_attachments) {
+		$this->_attachments = $_attachments;
+		return $this;
+	}
+
+	/**
+	 * @param string $_bundleId
+	 * @return self
+	 */
+	public function setBundleId($_bundleId) {
+		$this->_bundleId = $_bundleId;
+		return $this;
+	}
+
+	/**
+	 * @param \Zend\Uri\Uri|string $_canonicalUrl
+	 * @return self
+	 */
+	public function setCanonicalUrl($_canonicalUrl) {
+		$this->_canonicalUrl = $_canonicalUrl;
+		return $this;
+	}
+
+	/**
+	 * @param DateTime $_created
+	 * @return self
+	 */
+	public function setCreated($_created) {
+		$this->_created = $_created;
+		return $this;
+	}
+
+	/**
+	 * @param \GoogleGlass\Entity\Timeline\GoogleGlass\Contact $_creator
+	 * @return self
+	 */
+	public function setCreator($_creator) {
+		$this->_creator = $_creator;
+		return $this;
+	}
+
+	/**
+	 * @param DateTime $_displayTime
+	 * @return self
+	 */
+	public function setDisplayTime($_displayTime) {
+		$this->_displayTime = $_displayTime;
+		return $this;
+	}
+
+	/**
+	 * @param string $_eTag
+	 * @return self
+	 */
+	public function setETag($_eTag) {
+		$this->_eTag = $_eTag;
+		return $this;
+	}
+
+	/**
+	 * @param string $_html
+	 * @return self
+	 */
+	public function setHtml($_html) {
+		$this->_html = $_html;
+		return $this;
+	}
+
+	/**
+	 * @param string $_id
+	 * @return self
+	 */
+	public function setId($_id) {
+		$this->_id = $_id;
+		return $this;
+	}
+
+	/**
+	 * @param string $_inReplyTo
+	 * @return self
+	 */
+	public function setInReplyTo($_inReplyTo) {
+		$this->_inReplyTo = $_inReplyTo;
+		return $this;
+	}
+
+	/**
+	 * @param boolean $_isBundleCover
+	 * @return self
+	 */
+	public function setIsBundleCover($_isBundleCover) {
+		$this->_isBundleCover = $_isBundleCover;
+		return $this;
+	}
+
+	/**
+	 * @param boolean $_isDeleted
+	 * @return self
+	 */
+	public function setIsDeleted($_isDeleted) {
+		$this->_isDeleted = $_isDeleted;
+		return $this;
+	}
+
+	/**
+	 * @param \GoogleGlass\Entity\Timeline\booleam $_isPinned
+	 * @return self
+	 */
+	public function setIsPinned($_isPinned) {
+		$this->_isPinned = $_isPinned;
+		return $this;
+	}
+
+	/**
+	 * @param string $_kind
+	 * @return self
+	 */
+	public function setKind($_kind) {
+		$this->_kind = $_kind;
+		return $this;
+	}
+
+	/**
+	 * @param \GoogleGlass\Entity\Location $_location
+	 * @return self
+	 */
+	public function setLocation($_location) {
+		$this->_location = $_location;
+		return $this;
+	}
+
+	/**
+	 * @param ArrayObject $_menuItems
+	 * @return self
+	 */
+	public function setMenuItems($_menuItems) {
+		$this->_menuItems = $_menuItems;
+		return $this;
+	}
+
+	/**
+	 * @param \GoogleGlass\Entity\NotificationConfig $_notification
+	 * @return self
+	 */
+	public function setNotification(NotificationConfig $_notification) {
+		$this->_notification = $_notification;
+		return $this;
+	}
+
+	/**
+	 * @param number $_pinScore
+	 * @return self
+	 */
+	public function setPinScore($_pinScore) {
+		$this->_pinScore = $_pinScore;
+		return $this;
+	}
+
+	/**
+	 * @param ArrayObject $_recipients
+	 * @return self
+	 */
+	public function setRecipients($_recipients) {
+		$this->_recipients = $_recipients;
+		return $this;
+	}
+
+	/**
+	 * @param string $_selfLink
+	 * @return self
+	 */
+	public function setSelfLink($_selfLink) {
+		$this->_selfLink = $_selfLink;
+		return $this;
+	}
+
+	/**
+	 * @param string $_sourceItemId
+	 * @return self
+	 */
+	public function setSourceItemId($_sourceItemId) {
+		$this->_sourceItemId = $_sourceItemId;
+		return $this;
+	}
+
+	/**
+	 * @param string $_speakableText
+	 * @return self
+	 */
+	public function setSpeakableText($_speakableText) {
+		$this->_speakableText = $_speakableText;
+		return $this;
+	}
+
+	/**
+	 * @param string $_speakableType
+	 * @return self
+	 */
+	public function setSpeakableType($_speakableType) {
+		$this->_speakableType = $_speakableType;
+		return $this;
+	}
+
+	/**
+	 * @param string $_text
+	 * @return self
+	 */
+	public function setText($_text) {
+		$this->_text = $_text;
+		return $this;
+	}
+
+	/**
+	 * @param string $_title
+	 * @return self
+	 */
+	public function setTitle($_title) {
+		$this->_title = $_title;
+		return $this;
+	}
+
+	/**
+	 * @param DateTime $_updated
+	 * @return self
+	 */
+	public function setUpdated($_updated) {
+		$this->_updated = $_updated;
+		return $this;
+	}
+	
+	public function hasAttachments()
+	{
+	    return count($this->getAttachments()) > 0;
+	}
+
+	public function toArray()
+	{
+	    $retval = array(
+	       'kind' => $this->getKind(),
+	        'id' => $this->getId(),
+	        'selfLink' => $this->getSelfLink(),
+	        'etag' => $this->getETag()
+	    );
+	    
+	    $created = $this->getCreated();
+	    
+	    if($created instanceof \DateTime) {
+	        $created = $created->format(\DateTime::RFC3339);
+	    } else {
+	        $created = null;
+	    }
+	    
+	    $retval['created'] = $created;
+	    
+	    $updated = $this->getUpdated();
+	    
+	    if($updated instanceof \DateTime) {
+	        $updated = $updated->format(\DateTime::RFC3339);
+	    } else {
+	        $updated = null;
+	    }
+	    
+	    $retval['updated'] = $updated;
+	    
+	    $displayTime = $this->getDisplayTime();
+	    
+	    if($displayTime instanceof \DateTime) {
+	        $displayTime = $displayTime->format(\DateTime::RFC3339);
+	    } else {
+	        $displayTime = null;
+	    }
+	    
+	    $retval['displayTime'] = $displayTime;
+	    
+	    $location = $this->getLocation();
+	    
+	    if($location instanceof Location) {
+	        $retval['location'] = $location->toArray();
+	    }
+	    
+	    $recipients = $this->getRecipients();
+	    
+	    $retval['recipients'] = array();
+	    foreach($recipients as $recipient) {
+	        $retval['recipients'][] = $recipient->toArray();
+	    }
+	    
+	    $attachments = $this->getAttachments();
+	    
+	    $retval['attachments'] = array();
+	    
+	    foreach($attachments as $attachment) {
+	        $retval['attachments'][] = $attachment->toArray();
+	    }
+	    
+	    $menuItems = $this->getMenuItems();
+	    
+	    $retval['menuItems'] = array();
+	    
+	    foreach($menuItems as $menuItem) {
+	        $retval['menuItems'][] = $menuItem->toArray();
+	    }
+	    
+	    return $retval;
+	}
+	
+	public function fromJsonResult(array $result)
+	{
+	    $this->setKind($result['kind'])
+	         ->setId($result['id'])
+	         ->setSelfLink($result['selfLink'])
+	         ->setCreated($this->convertToDateTime($result['created']))
+	         ->setUpdated($this->convertToDateTime($result['updated']))
+	         ->setDisplayTime($this->convertToDateTime(isset($result['displayTime']) ? $result['displayTime'] : null))
+	         ->setETag($result['etag']);
+	    
+	    if(isset($result['location'])) {
+    	    $locationObj = $this->getServiceLocator()->get('GoogleGlass\Location');
+    	    $locationObj->fromJsonResult($result['location']);
+    	    
+    	    $this->setLocation($locationObj);
+	    }
+	    
+	    if(isset($result['recipients']) && is_array($result['recipients'])) {
+    	    foreach($result['recipients'] as $contact)
+    	    {
+    	        $contactObj = $this->getServiceLocator()->get('GoogleGlass\Contact');
+    	        $contactObj->fromJsonResult($contact);
+    	        $this->_recipients[] = clone $contactObj;
+    	    }
+	    }
+	    
+	    if(isset($result['attachments']) && is_array($result['attachments'])) {
+    	    foreach($result['attachments'] as $attachment)
+    	    {
+    	        $attachmentObj = $this->getServiceLocator()->get('GoogleGlass\Timeline\Attachment');
+    	        $attachmentObj->fromJsonResult($attachment);
+    	        $this->_attachments[] = clone $attachmentObj;
+    	    }
+	    }
+	    
+	    if(isset($result['menuItems']) && is_array($result['menuItems'])) {
+    	    foreach($result['menuItems'] as $menuItem)
+    	    {
+    	        $menuItemObj = $this->getServiceLocator()->get('GoogleGlass\Timeline\MenuItem');
+    	        $menuItemObj->fromJsonResult($menuItem);
+    	        
+    	        $this->_menuItems[] = clone $menuItemObj;
+    	    }
+	    }
+	    
+	    return $this;
+	}
+	
+	public function insert()
+    {
+        $params = array();
+        
+        if(!is_null($this->getAttachment())) {
+            $params['data'] = $this->getAttachment()->getContent();
+            $params['mimeType'] = $this->getAttachment()->getMimeType();
+            
+            /**
+             * @todo We should look at this and maybe change our approach depending on the
+             *       type of media we are uploading. Images should be uploaded multipart, but
+             *       audio/video files may want to do some sort of fancy multi-stage upload
+             *       for performance reasons. Although honestly, it probably doesn't matter
+             *       because it should be done offline anyway.
+             */
+            $params['uploadType'] = 'multipart';
+        }
+        
+        $notificationConfig = @$this->getNotification();
+        
+        if(is_null($notificationConfig)) {
+            $notificationConfig = new \Google_Service_Mirror_NotificationConfig();
+            $notificationConfig->setLevel("DEFAULT");
+            $this->setNotification($notificationConfig);
+        }
+        
+        $glassService = $this->getServiceLocator()->get('GoogleGlass\Service\GlassService');
+        
+        $retval = $glassService->getMirrorService()->timeline->insert($this, $params);
+        
+        $this->populateFromGoogleResult($retval);
+        
+        return $this;
+    }
+    
+}
