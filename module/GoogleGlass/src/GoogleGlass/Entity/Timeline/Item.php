@@ -469,6 +469,13 @@ class Item extends GlassModelAbstract
 	 * @return self
 	 */
 	public function setMenuItems($_menuItems) {
+	    
+	    if(is_array($_menuItems)) {
+	        $_menuItems = new \ArrayObject($_menuItems);
+	    } elseif(!$_menuItems instanceof \ArrayObject) {
+            throw new \InvalidArgumentException("Must be an array or ArrayObject");
+	    }
+	    
 		$this->_menuItems = $_menuItems;
 		return $this;
 	}
