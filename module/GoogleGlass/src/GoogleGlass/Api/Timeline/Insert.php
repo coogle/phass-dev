@@ -62,7 +62,6 @@ class Insert extends ApiAbstract
         
         $response = $this->executeRequest($client);
         
-        var_dump($response);exit;
         $retval = $this->getServiceLocator()->get('GoogleGlass\Timeline\Item');
         $retval->fromJsonResult($response);
         
