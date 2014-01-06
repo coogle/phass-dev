@@ -28,6 +28,8 @@ class AttachmentController extends AbstractActionController
             return;
         }
         
+        $token = $this->getServiceLocator()->get('GoogleGlass\OAuth2\Token');
+
         $client = $this->getServiceLocator()->get('GoogleGlass\Api\Client');
         
         try {
@@ -47,7 +49,16 @@ class AttachmentController extends AbstractActionController
             return;
         }
         
-        $contentFile = @fopen($response->getContentUrl(), 'r');
+        $contextConfig = array(
+            'http' => array(
+                'method' => 'GET',
+                'header' => "Authorization: {$token->getTokenType()} {$token->getAccessToken()}" 
+            )
+        );
+        
+        $context = stream_context_create($contextConfig);
+        
+        $contentFile = fopen($response->getContentUrl(), 'r', false, $context);
         
         if(!$contentFile) {
             throw new \RuntimeException("Failed to open content URL for attachment");
@@ -65,8 +76,8 @@ class AttachmentController extends AbstractActionController
             'Content-Type' => $response->getMimeType()
         ));
         
-        $response->setHeaders($headers);
+        $streamResponse->setHeaders($headers);
         
-        return $response;
+        return $streamResponse;
     }
 }

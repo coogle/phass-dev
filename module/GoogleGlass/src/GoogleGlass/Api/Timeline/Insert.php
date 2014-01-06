@@ -28,8 +28,44 @@ class Insert extends ApiAbstract
         
         $response = $this->executeRequest($client);
         
-        $data->fromJsonResult($response);
+        $retval = $this->getServiceLocator()->get('GoogleGlass\Timeline\Item');
+        $retval->fromJsonResult($response);
         
-        return $data;
+        return $retval;
+    }
+    
+    protected function executeWithAttachments(Item $item)
+    {
+        $item = clone $item;
+        $itemAttachments = $item->getAttachments();
+        
+        $client = $this->getHttpClient('/upload/mirror/v1/timeline', Request::METHOD_POST);
+        
+        $boundary = md5($this->getGlassService()->generateGuid());
+        
+        $client->getRequest()
+               ->getHeaders()
+               ->addHeaders(array(
+                    'Content-Type' => 'multipart/related; boundary="' . $boundary . '"',
+                ));
+               
+        $content = "--$boundary\nContent-Type: application/json; charset=UTF-8\n\n";
+        $content .= $item->toJson(false);
+        
+        foreach($itemAttachments as $attachment) {
+            $content .= "\n--$boundary\nContent-Type: {$attachment->getMimeType()}\nContent-Transfer-Encoding: binary\n\n{$attachment->getContent()}";
+        }
+        
+        $content .= "\n--$boundary--";
+        
+        $client->setRawBody($content);
+        
+        $response = $this->executeRequest($client);
+        
+        var_dump($response);exit;
+        $retval = $this->getServiceLocator()->get('GoogleGlass\Timeline\Item');
+        $retval->fromJsonResult($response);
+        
+        return $retval;
     }
 }

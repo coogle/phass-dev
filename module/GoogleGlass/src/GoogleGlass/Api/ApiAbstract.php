@@ -24,6 +24,11 @@ abstract class ApiAbstract implements ServiceLocatorAwareInterface, FactoryInter
      */
     protected $_httpClient;
     
+    /**
+     * @var GoogleGlass\Service\GlassService;
+     */
+    protected $_glassService;
+    
     public function createService(ServiceLocatorInterface $serviceLocator)
     {
         $retval = new static();
@@ -41,7 +46,9 @@ abstract class ApiAbstract implements ServiceLocatorAwareInterface, FactoryInter
         
         $client->setHeaders($authHeaders);
         
-        $retval->setHttpClient($client);
+        $retval->setHttpClient($client)
+               ->setGlassService($serviceLocator->get('GoogleGlass\Service\GlassService'));
+        
         
         return $retval;
     }
@@ -97,6 +104,19 @@ abstract class ApiAbstract implements ServiceLocatorAwareInterface, FactoryInter
 	public function setHttpClient(\Zend\Http\Client $_httpClient) {
 		$this->_httpClient = $_httpClient;
 		return $this;
+	}
+	
+	/**
+	 * @return \GoogleGlass\Service\GlassService;
+	 */
+	public function getGlassService()
+	{
+	    return $this->_glassService;
+	}
+	
+	public function setGlassService($glassService)
+	{
+	    $this->_glassService = $glassService;
 	}
 
 	abstract public function execute($data = null);
