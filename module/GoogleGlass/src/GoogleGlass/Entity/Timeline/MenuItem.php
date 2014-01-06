@@ -53,7 +53,10 @@ class MenuItem extends GlassModelAbstract
 
     public function toArray()
     {
-        return array('action' => $this->getAction());
+        return array(
+            'action' => $this->getAction(),
+            'payload' => $this->getPayload()
+        );
     }
     
     public function fromJsonResult(array $result)

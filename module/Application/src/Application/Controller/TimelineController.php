@@ -51,10 +51,10 @@ class TimelineController extends AbstractController
         $item->setText("Hello From Phass!")
         ->setDefaultNotification();
          
-        $menuItem = $this->getServiceLocator()->get('GoogleGlass\Timeline\MenuItem');
+        $menuItem = clone $this->getServiceLocator()->get('GoogleGlass\Timeline\MenuItem');
          
         $menuItem->setId($this->getGlassService()->generateGuid())
-        ->setAction(MenuItem::DELETE);
+                 ->setAction(MenuItem::DELETE);
          
         $item->getMenuItems()->append($menuItem);
         
@@ -85,7 +85,30 @@ class TimelineController extends AbstractController
                 
                 $item->insert();
                 break;
+            case 'video':
                 
+                $item->setText("Pentwater, MI Beach");
+                $snapshotUrl = "http://pentwater-mears.cooglenet.com/snapshot_3gp.jpg";
+                
+                $attachment = $this->getServiceLocator()->get('GoogleGlass\Timeline\Attachment');
+                
+                $imageContent = file_get_contents($snapshotUrl);
+                
+                $attachment->setContent($imageContent)
+                           ->setMimeType('image/jpeg');
+                
+                $item->getAttachments()->append($attachment);
+                
+                $menuItem = clone $this->getServiceLocator()->get('GoogleGlass\Timeline\MenuItem');
+                
+                $menuItem->setId($this->getGlassService()->generateGuid())
+                         ->setAction(MenuItem::PLAY_VIDEO)
+                         ->setPayload("rtsp://pentwater-mears.cooglenet.com/live_3gpp.sdp");
+                
+                $item->getMenuItems()->append($menuItem);
+                
+                $item->insert();
+                break;
         }
         
         return $this->redirect()->toUrl("/");

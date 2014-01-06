@@ -26,6 +26,10 @@ $(function() {
     $('#new-image-item').button().click(function() {
         window.location.replace("/timeline/demo?type=image");
     });
+
+    $('#new-video-item').button().click(function() {
+        window.location.replace("/timeline/demo?type=video");
+    });
 });
 </script>
 
@@ -36,6 +40,7 @@ $(function() {
     <button id="new-item">Add new Timeline Item</button>
     <button id="new-simple-item">Add Simple Item</button>
     <button id="new-image-item">Add Simple Item with Image</button>
+    <button id="new-video-item">Add Streaming Video</button>
     <hr/>
     <h1>Timeline Items</h1>
     <?php if($this->timelineItems->items()->count() > 0): ?>

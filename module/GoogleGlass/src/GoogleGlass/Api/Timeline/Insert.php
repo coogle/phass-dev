@@ -39,6 +39,8 @@ class Insert extends ApiAbstract
         $item = clone $item;
         $itemAttachments = $item->getAttachments();
         
+        $item->setAttachments(array());
+        
         $client = $this->getHttpClient('/upload/mirror/v1/timeline', Request::METHOD_POST);
         
         $boundary = md5($this->getGlassService()->generateGuid());
@@ -55,6 +57,8 @@ class Insert extends ApiAbstract
         foreach($itemAttachments as $attachment) {
             $content .= "\n--$boundary\nContent-Type: {$attachment->getMimeType()}\nContent-Transfer-Encoding: binary\n\n{$attachment->getContent()}";
         }
+        
+        
         
         $content .= "\n--$boundary--";
         
