@@ -24,8 +24,6 @@ class Module
         
         date_default_timezone_set($config['app']["timezone"]);
         
-        $events = $e->getApplication()->getEventManager()->getSharedManager();
-        $events->attachAggregate($e->getApplication()->getServiceManager()->get('Application\Listener\GlassListener'));
     }
 
     public function getConfig()
@@ -48,8 +46,6 @@ class Module
     {
     	return array(
 			'factories' => array(
-                'Application\Listener\GlassListener' => 'Application\Listener\GlassListenerFactory',
-			    'Application\Db\Table\Notifications' => 'Application\Db\Table\NotificationTable'
 			)
     	);
     }
@@ -57,6 +53,9 @@ class Module
     public function getControllerConfig()
     {
         return array(
+            'invokables' => array(
+                'Application\Controller\GlassSubscription' => 'Application\Controller\GlassSubscriptionController'
+            ),
             'factories' => array(
                 'Application\Controller\Index' => 'Application\Controller\IndexController',
                 'Application\Controller\Subscriptions' => 'Application\Controller\SubscriptionsController',

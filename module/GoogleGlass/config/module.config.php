@@ -42,6 +42,7 @@ return array(
         )
     ),
     'googleglass' => array(
+        'subscriptionController' => null,
         'tokenStore' => 'GoogleGlass\OAuth2\Storage\Session',
         'auth' => array(
             "client_id" => null,
@@ -74,7 +75,7 @@ return array(
         'applicationName' => null,
         'subscriptionUri' => null,
         'randomKey' => 'KJ9#)NDIEOUEIJKL',
-        'development' => true
+        'development' => true,
     ),
     'controllers' => array(
         'invokables' => array(

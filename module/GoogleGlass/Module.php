@@ -63,7 +63,10 @@ class Module
         $eventManager = $e->getApplication()->getEventManager();
         $eventManager->attach(MvcEvent::EVENT_DISPATCH_ERROR, array($this, 'onDispatchError'), 100); 
         
+        $sharedManager = $eventManager->getSharedManager();
+        $sharedManager->attachAggregate($e->getApplication()->getServiceManager()->get('GoogleGlass\Notifications\Listener'));
     }
+    
     public function getAutoloaderConfig()
     {
         return array(
@@ -103,7 +106,8 @@ class Module
                 'GoogleGlass\OAuth2\Storage\Session' => 'GoogleGlass\OAuth2\Storage\Session',
                 'GoogleGlass\OAuth2\Token' => 'GoogleGlass\OAuth2\TokenFactory',
                 'GoogleGlass\Api\Client' => 'GoogleGlass\Api\ClientFactory',
-                'GoogleGlass\Subscription' => 'GoogleGlass\Entity\Subscription'
+                'GoogleGlass\Subscription' => 'GoogleGlass\Entity\Subscription',
+                'GoogleGlass\Notifications\Listener' => 'GoogleGlass\Notifications\NotificationsListenerFactory'
             ),
         );
     }

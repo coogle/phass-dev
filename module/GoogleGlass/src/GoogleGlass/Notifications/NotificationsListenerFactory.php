@@ -1,14 +1,14 @@
 <?php
 
-namespace Application\Listener;
+namespace GoogleGlass\Notifications;
 
 use Zend\ServiceManager\FactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
 
-class GlassListenerFactory implements FactoryInterface
+class NotificationsListenerFactory implements FactoryInterface
 {
     public function createService(ServiceLocatorInterface $serviceLocator)
     {
-        return new GlassListener();
+        return new NotificationsListener();
     }
 }

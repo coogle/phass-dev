@@ -103,7 +103,7 @@ class TimelineController extends AbstractController
                 
                 $menuItem->setId($this->getGlassService()->generateGuid())
                          ->setAction(MenuItem::PLAY_VIDEO)
-                         ->setPayload("rtsp://pentwater-mears.cooglenet.com/live_3gpp.sdp");
+                         ->setPayload("https://s3.amazonaws.com/phass-demo-videos/kittens.3gp");
                 
                 $item->getMenuItems()->append($menuItem);
                 
