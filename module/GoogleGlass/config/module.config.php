@@ -38,6 +38,16 @@ return array(
                         'action' => 'get'
                     )
                 )
+            ),
+            'googleglass-unauth' => array(
+                'type' => 'Zend\Mvc\Router\Http\Literal',
+                'options' => array(
+                    'route' => '/googleglass/unauth',
+                    'defaults' => array(
+                        'controller' => 'GoogleGlass\Controller\Callback',
+                        'action' => 'unauth'
+                    )
+                )
             )
         )
     ),
@@ -76,6 +86,7 @@ return array(
         'subscriptionUri' => null,
         'randomKey' => 'KJ9#)NDIEOUEIJKL',
         'development' => true,
+        'template_path' => null
     ),
     'controllers' => array(
         'invokables' => array(

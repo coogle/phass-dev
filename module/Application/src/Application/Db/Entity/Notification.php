@@ -38,7 +38,7 @@ class Notification
                ->setOperation(isset($input['operation']) ? $input['operation'] : null);
         
         if(isset($input['created'])) {
-            $retval->setCreated(\DateTime::createFromFormat(\DateTime::ISO8601, $input['created']);
+            $retval->setCreated(\DateTime::createFromFormat(\DateTime::ISO8601, $input['created']));
         }
         
         return $retval;

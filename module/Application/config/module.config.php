@@ -8,6 +8,9 @@
  */
 
 return array(
+    'googleglass' => array(
+        'template_path' => 'glass-view'
+    ),
     'app' => array(
        'timezone' => "America/Detroit"
     ),

@@ -6,11 +6,13 @@ use Zend\ModuleManager\Feature\ServiceProviderInterface;
 use Zend\ServiceManager\FactoryInterface;
 use GoogleGlass\Api\Exception\ApiCallNotFoundException;
 use Zend\ServiceManager\Exception\ServiceNotFoundException;
+use Zend\Log\Logger;
 
 class Client implements ServiceProviderInterface, FactoryInterface
 {
     use \Zend\ServiceManager\ServiceLocatorAwareTrait;
     use \GoogleGlass\Entity\SimpleFactoryTrait;
+    use \GoogleGlass\Log\LoggerTrait;
     
     public function getServiceConfig()
     {
@@ -47,6 +49,13 @@ class Client implements ServiceProviderInterface, FactoryInterface
             throw new ApiCallNotFoundException("The API Call is not valid");
         }
         
-        return $apiObject->execute($data);
+        try {
+            $this->logEvent("Executing API call '$apiCall'", Logger::DEBUG);
+            
+            return $apiObject->execute($data);
+        } catch(\Exception $e) {
+            $this->logEvent("Exception caught trying to execute API call '$apiCall': {$e->getMessage()}", Logger::ERR);
+            throw $e;
+        }
     }
 }

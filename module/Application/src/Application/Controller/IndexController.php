@@ -21,19 +21,6 @@ class IndexController extends AbstractController
         
         $timelineItems = $client->execute('timeline::list');
         
-        /*
-        $contact = $this->getServiceLocator()->get('GoogleGlass\Contact');
-        
-        $contact->setAcceptCommands(array(Contact::COMMAND_POST_UPDATE))
-                ->setDisplayName("CoogleWare")
-                ->setSpeakableName("Coogle Ware")
-                ->setType(Contact::TYPE_GROUP)
-                ->insert();
-        
-        //$glassService->subscribe(GlassService::COLLECTION_TIMELINE);
-        $glassService->unsubscribe(GlassService::COLLECTION_TIMELINE);
-        */
-        
         return new ViewModel(compact('timelineItems'));
     }
 }

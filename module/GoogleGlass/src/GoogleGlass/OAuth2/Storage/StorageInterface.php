@@ -7,6 +7,7 @@ interface StorageInterface
 {
     public function store(Token $token);
     public function retrieve();
+    public function destroy();
 }
 
 ?>

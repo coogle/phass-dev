@@ -5,9 +5,17 @@ namespace GoogleGlass;
 use Zend\Mvc\MvcEvent;
 use GoogleGlass\Api\Exception\InvalidTokenException;
 use Zend\Http\Response;
+use GoogleGlass\ServiceManager\ServiceLocatorFactory;
 
 class Module
 {
+    /**
+     * This method listens for a Dispatching error and checks to see if
+     * the error was caused by us not having a valid token. If it is, we auto
+     * magically redirect the user into the OAuth2 workflow to reauth.
+     * 
+     * @param MvcEvent $e
+     */
     public function onDispatchError(MvcEvent $e)
     {
         $serviceLocator = $e->getApplication()->getServiceManager();
@@ -65,6 +73,8 @@ class Module
         
         $sharedManager = $eventManager->getSharedManager();
         $sharedManager->attachAggregate($e->getApplication()->getServiceManager()->get('GoogleGlass\Notifications\Listener'));
+        
+        ServiceLocatorFactory::setInstance($e->getApplication()->getServiceManager());
     }
     
     public function getAutoloaderConfig()
@@ -102,9 +112,11 @@ class Module
                 'GoogleGlass\Model\CredentialsTable' => 'GoogleGlass\Model\CredentialsTable',
                 'GoogleGlass\OAuth\Consumer' => 'GoogleGlass\OAuth\ConsumerFactory',
                 'GoogleGlass\Http\Client' => 'GoogleGlass\Http\ClientFactory',
-                'GoogleGlass\OAuth2\Client' => 'GoogleGlass\Oauth2\ClientFactory',
+                'GoogleGlass\OAuth2\Client' => 'GoogleGlass\OAuth2\ClientFactory',
                 'GoogleGlass\OAuth2\Storage\Session' => 'GoogleGlass\OAuth2\Storage\Session',
+                'GoogleGlass\OAuth2\TokenStore' => 'GoogleGlass\OAuth2\Storage\StorageFactory',
                 'GoogleGlass\OAuth2\Token' => 'GoogleGlass\OAuth2\TokenFactory',
+                'GoogleGlass\OAuth2\Jwt' => 'GoogleGlass\OAuth2\Jwt\Jwt',
                 'GoogleGlass\Api\Client' => 'GoogleGlass\Api\ClientFactory',
                 'GoogleGlass\Subscription' => 'GoogleGlass\Entity\Subscription',
                 'GoogleGlass\Notifications\Listener' => 'GoogleGlass\Notifications\NotificationsListenerFactory'

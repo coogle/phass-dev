@@ -11,6 +11,10 @@ namespace Application;
 
 use Zend\Mvc\ModuleRouteListener;
 use Zend\Mvc\MvcEvent;
+use Zend\EventManager\SharedEventManager;
+use GoogleGlass\Events;
+use GoogleGlass\Service\GlassService;
+use Application\Db\Entity\Credential;
 
 class Module
 {
@@ -20,12 +24,79 @@ class Module
         $moduleRouteListener = new ModuleRouteListener();
         $moduleRouteListener->attach($eventManager);
         
-        $config = $e->getApplication()->getServiceManager()->get('Config');
+        $application = $e->getApplication();
+        
+        $config = $application->getServiceManager()->get('Config');
         
         date_default_timezone_set($config['app']["timezone"]);
-        
-    }
 
+        $sharedEventManager = $eventManager->getSharedManager();
+        
+        /**
+         * We attach to the Resolver user event here, which is used to resolve a user token (which should have been saved
+         * when we called GlassService::subscribe()) to a real user and OAuth2 Token object. This is neccessary to restore
+         * context during a notification callback so that we can do things like insert timeline items when we get a
+         * subscription ping.
+         */
+        $sharedEventManager->attach(GlassService::EVENT_IDENTIFIER, Events::EVENT_SUBSCRIPTION_RESOLVE_USER, function($event) use ($application) {
+            $userToken = $event->getParam('userToken', null);
+            $tokenType = $event->getParam('tokenType', null);
+            
+            if(is_null($userToken) || is_null($tokenType)) {
+                throw new \UnexpectedValueException("Event triggered but user token and token type not found");
+            }
+            
+            $credentialsTable = $application->getServiceManager()->get('Application\Db\Credentials');
+            
+            $user = null;
+            
+            switch($tokenType)
+            {
+                case GlassService::COLLECTION_LOCATIONS:
+                    $user = $credentialsTable->findByLocationGuid($userToken);
+                    break;
+                case GlassService::COLLECTION_TIMELINE:
+                    $user = $credentialsTable->findByTimelineGuid($userToken);
+                    break;
+            }
+            
+            if(is_null($user)) {
+                return;
+            }
+            
+            $token = $application->getServiceManager()->get('GoogleGlass\OAuth2\Token');
+            
+            $token->setAccessToken($user->getAuthToken())
+                  ->setRefreshToken($user->getRefreshToken());
+            
+            return $token;
+        });
+        
+        $sharedEventManager->attach(GlassService::EVENT_IDENTIFIER, Events::EVENT_NEW_AUTH_TOKEN, function($event) use ($application) {
+            $token = $event->getParam('token', null);
+            
+            if(!$token instanceof \GoogleGlass\Entity\OAuth2\Token) {
+                throw new \UnexpectedValueException("Could not retrieve token for new auth token event");
+            }
+            
+            $uniqueId = $token->getJwt()->getUniqueId();
+
+            $credentialsTable = $application->getServiceManager()->get('Application\Db\Credentials');
+            
+            $cred = $credentialsTable->findByUserId($uniqueId);
+            
+            if(!$cred) {
+                $cred = new Credential();
+                $cred->setUserId($uniqueId);
+            }
+            
+            $cred->setRefreshToken($token->getRefreshToken())
+                 ->setAuthToken($token->getAccessToken());
+            
+            $credentialsTable->save($cred);
+        });
+    }
+    
     public function getConfig()
     {
         return include __DIR__ . '/config/module.config.php';
@@ -44,10 +115,12 @@ class Module
     
     public function getServiceConfig()
     {
-    	return array(
-			'factories' => array(
-			)
-    	);
+        return array(
+            'factories' => array(
+                'Application\Db\Notifications' => 'Application\Db\Table\NotificationTable',
+                'Application\Db\Credentials' => 'Application\Db\Table\CredentialsTable',
+            )
+        );
     }
     
     public function getControllerConfig()

@@ -4,19 +4,14 @@ namespace GoogleGlass\Controller;
 
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\Log\Logger;
-use Zend\Session\Container;
 use GoogleGlass\Events;
-use GoogleGlass\Entity\Credentials;
 use Zend\Loader\Exception\SecurityException;
 use GoogleGlass\Entity\Subscription\Notification\AbstractNotification;
 use GoogleGlass\Service\GlassService;
 use Zend\Uri\UriFactory;
-use Guzzle\Common\Exception\RuntimeException;
 use Zend\Json\Json;
 use GoogleGlass\Entity\OAuth2\Token;
-use GoogleGlass\OAuth\Storage\StorageInterface;
 use Zend\ServiceManager\Exception\ServiceNotFoundException;
-use Zend\Http\Client;
 
 class CallbackController extends AbstractActionController
 {
@@ -25,7 +20,7 @@ class CallbackController extends AbstractActionController
     public function setEventManager(\Zend\EventManager\EventManagerInterface $events)
     {
         parent::setEventManager($events);
-        $events->addIdentifiers('GoogleGlass\Service\GlassService');
+        $events->addIdentifiers(GlassService::EVENT_IDENTIFIER);
         return $this;
     }
     
@@ -199,14 +194,14 @@ class CallbackController extends AbstractActionController
         
         if($this->getRequest()->getQuery('error', false)) {
              $this->logEvent("Error authenticating with Google: {$this->getRequest()->getQuery('error')}", Logger::ERR);
-             throw new RuntimeException("Error Authenticating with Google");
+             throw new \RuntimeException("Error Authenticating with Google");
         }
         
         $code = $this->getRequest()->getQuery('code', false);
         
         if(!$code) {
             $this->logEvent("Did not receive code from Google as expected during OAuth2", Logger::ERR);
-            throw new RuntimeException("Did not receive code as expected");
+            throw new \RuntimeException("Did not receive code as expected");
         }
         
         $oAuthClient = $this->getServiceLocator()->get('GoogleGlass\OAuth2\Client');
@@ -223,10 +218,7 @@ class CallbackController extends AbstractActionController
     
     protected function processOauth2Token(array $tokenData)
     {
-        $config = $this->getServiceLocator()->get('Config');
-        $config = $config['googleglass'];
-        
-        $tokenStorageObj = $this->getServiceLocator()->get($config['tokenStore']);
+        $tokenStorageObj = $this->getServiceLocator()->get('GoogleGlass\Oauth2\TokenStore');
         
         if(!$tokenStorageObj instanceof \GoogleGlass\OAuth2\Storage\StorageInterface) {
             throw new ServiceNotFoundException("Provided storage service must implement StorageInterface");
@@ -234,11 +226,23 @@ class CallbackController extends AbstractActionController
         
         if(isset($tokenData['error'])) {
             $this->logEvent("Failed to get access token from OAuth2: {$tokenData['error']}", Logger::ERR);
-            throw new RuntimeException("Failed to get access token");
+            throw new \RuntimeException("Failed to get access token");
         }
         
-        $tokenStorageObj->store(Token::getInstanceFromApiResult($tokenData));
+        $token = clone $this->getServiceLocator()->get('GoogleGlass\OAuth2\Token');
         
+        $tokenStorageObj->store($token->fromApiResult($tokenData));
+        
+        $this->getEventManager()->trigger(Events::EVENT_NEW_AUTH_TOKEN, null, array('token' => $token));
+        
+    }
+    
+    public function unauthAction()
+    {
+        $tokenStorageObj = $this->getServiceLocator()->get('GoogleGlass\OAuth2\TokenStore');
+        $tokenStorageObj->destroy();
+        
+        return $this->redirect()->toUrl('/');
     }
     
 }

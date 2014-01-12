@@ -12,22 +12,44 @@ use Zend\Mvc\Router\RouteMatch;
 use Zend\Mvc\MvcEvent;
 use Zend\Http\PhpEnvironment\Request;
 use Zend\Http\PhpEnvironment\Response;
+use GoogleGlass\Entity\Subscription\Notification\AbstractNotification;
+use Zend\EventManager\EventManagerInterface;
+use GoogleGlass\Service\GlassService;
+use Zend\Log\Logger;
 
 class NotificationsListener implements SharedListenerAggregateInterface, EventManagerAwareInterface, ServiceLocatorAwareInterface
 {
-    use \Zend\EventManager\EventManagerAwareTrait;
     use \Zend\ServiceManager\ServiceLocatorAwareTrait;
     use \GoogleGlass\Log\LoggerTrait;
     
     protected $_listeners = array();
+    
+    /**
+     * @var EventManagerInterface
+     */
+    protected $_eventManager;
+    
+    public function setEventManager(EventManagerInterface $eventManager)
+    {
+        $eventManager->addIdentifiers(GlassService::EVENT_IDENTIFIER);
+        $this->_eventManager = $eventManager;
+        return $this;
+    }
+    
+    /**
+     * @return EventManagerInterface
+     */
+    public function getEventManager()
+    {
+        return $this->_eventManager;
+    }
     
     public function attachShared(SharedEventManagerInterface $events)
     {
         $self = $this;
         $attachEvent = function($glassEvent, $method) use ($events, $self)
         {
-            $service = 'GoogleGlass\Service\GlassService';
-            $this->_listeners[] = $events->attach($service, $glassEvent, array($self, $method), -100);
+            $this->_listeners[] = $events->attach(GlassService::EVENT_IDENTIFIER, $glassEvent, array($self, $method), -100);
         };
         
         $attachEvent(GlassEvent::EVENT_SUBSCRIPTION_CUSTOM, 'onSubscriptionEvent');
@@ -60,6 +82,31 @@ class NotificationsListener implements SharedListenerAggregateInterface, EventMa
         
         $application = $this->getServiceLocator()->get('Application');
         $eventManager = $application->getEventManager();
+        $notification = $e->getParam('notification', null);
+        
+        if(is_null($notification) || !($notification instanceof AbstractNotification)) {
+            throw new \RuntimeException("Failed to rertieve notification object");
+        }
+        
+        $result = $this->getEventManager()->trigger(
+            GlassEvent::EVENT_SUBSCRIPTION_RESOLVE_USER, 
+            null, 
+            array(
+                'userToken' => $notification->getUserToken(),
+                'tokenType' => ($e->getName() == GlassEvent::EVENT_SUBSCRIPTION_LOCATION) ? GlassService::COLLECTION_LOCATIONS : GlassService::COLLECTION_TIMELINE
+            )
+        );
+        
+        
+        $OAuth2Token = $result->last();
+        
+        if(!$OAuth2Token instanceof \GoogleGlass\Entity\OAuth2\Token) {
+            $this->logEvent("Warning, will not trigger subscription events, as the EVENT_SUBSCRIPTION_RESOLVE_USER event did not return a valid OAuth2 token for this user", Logger::WARN);
+            return;
+        }
+        
+        $tokenStorageObj = $this->getServiceLocator()->get('GoogleGlass\Oauth2\TokenStore');
+        $tokenStorageObj->store($OAuth2Token);
         
         $mvcEvent = new MvcEvent();
         $mvcEvent->setTarget($application)
@@ -95,13 +142,10 @@ class NotificationsListener implements SharedListenerAggregateInterface, EventMa
             'controller' => $config['googleglass']['subscriptionController'],
             'action' => $action
         ));
-        
 
         $mvcEvent->setRouteMatch($matches);
                 
         $result = $eventManager->trigger(MvcEvent::EVENT_DISPATCH, $mvcEvent);
-        
-        $response = $result->first();
         
         /**
          * @todo Something useful with $response

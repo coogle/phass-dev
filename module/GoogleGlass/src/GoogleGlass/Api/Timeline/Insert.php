@@ -14,6 +14,10 @@ class Insert extends ApiAbstract
             throw new \InvalidArgumentException("Must provide a Timeline Item");
         }
         
+        if(is_null($data->getHtml()) && !is_null($data->getTemplate())) {
+            $data->render();
+        }
+        
         $itemAttachments = $data->getAttachments();
         
         if($itemAttachments->count() > 0) {
@@ -25,6 +29,8 @@ class Insert extends ApiAbstract
         $rawPost = $data->toJson(false);
         
         $client->setRawBody($rawPost);
+        
+        $this->logEvent(var_export($client->getRequest()->__toString(), true));
         
         $response = $this->executeRequest($client);
         

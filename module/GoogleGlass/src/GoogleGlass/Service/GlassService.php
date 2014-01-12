@@ -18,6 +18,8 @@ class GlassService implements \Zend\ServiceManager\ServiceLocatorAwareInterface,
     const ACTION_TYPE_CUSTOM = "CUSTOM";
     const ACTION_TYPE_LAUNCH = "LAUNCH";
      
+    const EVENT_IDENTIFIER = 'GoogleGlass\Service\GlassService';
+    
     const DEV_HTTPS_PROXY_URL = "https://mirrornotifications.appspot.com/forward";
     
     /**

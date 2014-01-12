@@ -15,18 +15,18 @@ class GlassClientFactory implements FactoryInterface
         $client->setApplicationName($config['googleglass']['applicationName']);
         
         if(is_null($config['googleglass']['oAuth2Uri'])) {
-        	$router = $sm->get('Router');
-        	$requestUri = $router->getRequestUri();
-        	$requestUri->setQuery(null);
+            $router = $sm->get('Router');
+            $requestUri = $router->getRequestUri();
+            $requestUri->setQuery(null);
         
-        	$oAuthUrl = $router->assemble(array(),
-        			array(
-        					'name' => 'googleglass-oauth2-callback',
-        					'force_canonical' => true,
-        					'uri' => $requestUri)
-        	);
+            $oAuthUrl = $router->assemble(array(),
+                array(
+                    'name' => 'googleglass-oauth2-callback',
+                    'force_canonical' => true,
+                    'uri' => $requestUri)
+            );
         } else {
-        	$oAuthUrl = $config['googleglass']['oAuth2Uri'];
+            $oAuthUrl = $config['googleglass']['oAuth2Uri'];
         }
         
         $client->setClientId($config['googleglass']['clientId']);

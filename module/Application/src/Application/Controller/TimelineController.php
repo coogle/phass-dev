@@ -9,7 +9,6 @@ class TimelineController extends AbstractController
 {
     public function viewAction()
     {
-        
     }
     
     public function insertAction()
